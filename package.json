@@ -1,7 +1,7 @@
 {
   "name": "@joneff/sass-import-resolver",
-  "version": "0.1.0",
-  "description": "Dead stupid sass inline importer (inliner)",
+  "version": "0.1.1",
+  "description": "Resolves the path of sass imports, following a heavily opinionated and probably very shady algorithm",
   "author": "Ivan Zhekov <joneff@gmail.com>",
   "repository": "joneff/sass-import-resolver",
   "bugs": "https://github.com/joneff/sass-import-resolver/issues",
