@@ -17,7 +17,7 @@
     "ci": "npm run lint && npm run test",
     "lint": "eslint **/*.js",
     "test": "mocha",
-    "preversion": "npm ci",
+    "preversion": "npm run ci",
     "postversion": "git push && git push --tags"
   },
   "devDependencies": {
