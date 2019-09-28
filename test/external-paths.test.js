@@ -7,7 +7,8 @@ const _resolve = require('../index')._resolve;
 const fileMathrix = [
     '//example.com/resource',
     'http://example.com/resource',
-    'https://exmaple.com/resource'
+    'https://exmaple.com/resource',
+    'url(example.com/resource)'
 ];
 const prevMatrix = [
     '',

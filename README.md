@@ -60,7 +60,7 @@ Does the actual work, collects **unique** matches and returns them.
 
 The algorithm is based on [Sass `@import` documentation], and should work as follows, assuming atleast `url` param is passed:
 
-1) if `url` starts with `http` or `//`, it's not proccessed at all and returned as is;
+1) if `url` starts with `http`, `//` or `url(`, it's not proccessed at all and returned as is;
 2) if `prev` is file, set `cwd` to the directory that file is in;
 3) if `prev` is directory, set `cwd` to that directory;
 4) if `prev` is not passed, set `cwd` to `proccess.cwd()`;

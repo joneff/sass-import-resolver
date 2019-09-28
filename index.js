@@ -3,7 +3,7 @@ const path = require('path');
 const reExt = /\.(css|scss|sass)$/;
 
 const isExternal = (url) => {
-    return url.startsWith('http') || url.startsWith('//');
+    return url.startsWith('http') || url.startsWith('//') || url.startsWith('url(');
 };
 
 const _resolve = (url, prev = '', includePaths = []) => {
