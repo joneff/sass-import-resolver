@@ -84,7 +84,7 @@ const resolve = (url, prev = "", includePaths = []) => {
 
     resolved.forEach((file) => {
         if (fs.existsSync(file)) {
-            existing.push[file];
+            existing.push(file);
         }
     });
 
