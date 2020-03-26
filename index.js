@@ -24,14 +24,14 @@ const _resolve = (url, prev = '', includePaths = []) => {
     }
 
     // node_modules import
-    if (url.startsWith("~")) {
+    if (url.startsWith('~')) {
         meta = path.parse(url.slice(1));
-        cwd = path.resolve("./node_modules");
+        cwd = path.resolve('./node_modules');
         includePaths = []; // eslint-disable-line no-param-reassign
     }
 
     // Import from parent
-    if (url.startsWith("../") || url.startsWith("./../")) {
+    if (url.startsWith('../') || url.startsWith('./../')) {
         includePaths = []; // eslint-disable-line no-param-reassign
     }
 
@@ -46,7 +46,7 @@ const _resolve = (url, prev = '', includePaths = []) => {
             matches.add(file);
         } else {
             // No extension
-            if (meta.base.startsWith("_")) {
+            if (meta.base.startsWith('_')) {
                 matches.add(path.resolve(dir, meta.dir, `${meta.base}.css`));
                 matches.add(path.resolve(dir, meta.dir, `${meta.base}.scss`));
                 matches.add(path.resolve(dir, meta.dir, `${meta.base}.sass`));
@@ -73,7 +73,7 @@ const _resolve = (url, prev = '', includePaths = []) => {
 
 };
 
-const resolve = (url, prev = "", includePaths = []) => {
+const resolve = (url, prev = '', includePaths = []) => {
 
     let resolved = _resolve(url, prev, includePaths);
     let existing = [];
