@@ -21,7 +21,7 @@
     "postversion": "git push && git push --tags"
   },
   "devDependencies": {
-    "eslint": "^6.4.0",
+    "eslint": "^7.0.0",
     "mocha": "^7.0.0"
   },
   "publishConfig": {
