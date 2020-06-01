@@ -25,9 +25,9 @@ const resolver = require('@joneff/sass-import-resolver');
 
 // assuming @import "../some/dependency.scss" in ./my/overly/nested/framework.scss
 const url = ...;
-const prev = ...;
+const options = ...;
 
-const result = resolver.resolve(url, prev);
+const result = resolver.resolve(url, options);
 
 console.log(result);
 // if the file exists => ./my/overly/some/dependecy.scss
