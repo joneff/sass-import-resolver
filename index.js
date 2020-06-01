@@ -12,9 +12,11 @@ const defaultOptions = {
     nodeModules: './node_modules'
 };
 
-const _resolve = (url, options) => {
+const _resolve = (url, options = {}) => {
     let file;
-    let { prev, includePaths, nodeModules } = { ...defaultOptions, ...options };
+    let prev = options.prev || defaultOptions.prev;
+    let includePaths = options.includePaths || defaultOptions.includePaths;
+    let nodeModules = options.nodeModules || defaultOptions.nodeModules;
     let cwd = path.extname(prev) ? path.dirname(prev) : prev;
     let meta = path.parse(url);
     let matches = new Set();
@@ -27,23 +29,23 @@ const _resolve = (url, options) => {
     // Absolute path
     if (url.startsWith('/')) {
         cwd = '';
-        includePaths = []; // eslint-disable-line no-param-reassign
+        includePaths = [];
     }
 
     // node_modules import
     if (url.startsWith('~')) {
         meta = path.parse(url.slice(1));
         cwd = path.resolve(nodeModules);
-        includePaths = []; // eslint-disable-line no-param-reassign
+        includePaths = [];
     }
 
     // Import from parent
     if (url.startsWith('../') || url.startsWith('./../')) {
-        includePaths = []; // eslint-disable-line no-param-reassign
+        includePaths = [];
     }
 
     // Only unique paths
-    includePaths = new Set([ cwd, ...includePaths ]); // eslint-disable-line no-param-reassign
+    includePaths = new Set([ cwd, ...includePaths ]);
 
     includePaths.forEach(( dir ) => {
         file = path.resolve(dir, path.format(meta));
@@ -82,7 +84,7 @@ const _resolve = (url, options) => {
 
 const resolve = (url, options) => {
 
-    let resolved = _resolve(url, { ...defaultOptions, ...options });
+    let resolved = _resolve(url, options);
     let existing = [];
 
     if (resolved.length && isExternal(resolved[0])) {
