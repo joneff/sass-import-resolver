@@ -6,8 +6,15 @@ const isExternal = (url) => {
     return url.startsWith('http') || url.startsWith('//') || url.startsWith('url(');
 };
 
-const _resolve = (url, prev = '', includePaths = []) => {
+const defaultOptions = {
+    prev: '',
+    includePaths: [],
+    nodeModules: './node_modules'
+};
+
+const _resolve = (url, options) => {
     let file;
+    let { prev, includePaths, nodeModules } = { ...defaultOptions, ...options };
     let cwd = path.extname(prev) ? path.dirname(prev) : prev;
     let meta = path.parse(url);
     let matches = new Set();
@@ -26,7 +33,7 @@ const _resolve = (url, prev = '', includePaths = []) => {
     // node_modules import
     if (url.startsWith('~')) {
         meta = path.parse(url.slice(1));
-        cwd = path.resolve('./node_modules');
+        cwd = path.resolve(nodeModules);
         includePaths = []; // eslint-disable-line no-param-reassign
     }
 
@@ -73,9 +80,9 @@ const _resolve = (url, prev = '', includePaths = []) => {
 
 };
 
-const resolve = (url, prev = '', includePaths = []) => {
+const resolve = (url, options) => {
 
-    let resolved = _resolve(url, prev, includePaths);
+    let resolved = _resolve(url, { ...defaultOptions, ...options });
     let existing = [];
 
     if (resolved.length && isExternal(resolved[0])) {

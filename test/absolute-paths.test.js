@@ -14,7 +14,7 @@ const dirMatrix = [
     '../', './../', '../dir/', './../dir/',
 ];
 const prevMatrix = [
-    "",
+    '',
     '/path/to/dir',
     '/path/to/file.ext'
 ];
@@ -54,14 +54,14 @@ suite('_resolve absolute paths', () => {
         });
     });
 
-    context('_resolve(/file.ext, prev)', () => {
+    context('_resolve(/file.ext, { prev })', () => {
         dirMatrix.forEach((dir) => {
             prevMatrix.forEach((prev) =>{
                 files.forEach((file) => {
 
                     test(`@import /${dir}${file} from ${prev} resolves correctly`, () =>{
                         let url = `/${dir}${file}`;
-                        let matches = _resolve(url, prev);
+                        let matches = _resolve(url, { prev });
 
                         assert.equal(matches.length, 1);
                         assert.equal(matches[0], path.resolve('/', `${dir}${file}`));
@@ -72,13 +72,13 @@ suite('_resolve absolute paths', () => {
         });
     });
 
-    context('_resolve(/file.ext, includePaths)', () => {
+    context('_resolve(/file.ext, { includePaths })', () => {
         dirMatrix.forEach((dir) => {
             files.forEach((file) => {
 
                 test(`@import /${dir}${file} with includePaths resolves correctly`, () =>{
                     let url = `/${dir}${file}`;
-                    let matches = _resolve(url, '', includePaths);
+                    let matches = _resolve(url, { includePaths });
 
                     assert.equal(matches.length, 1);
                     assert.equal(matches[0], path.resolve('/', `${dir}${file}`));
@@ -88,14 +88,14 @@ suite('_resolve absolute paths', () => {
         });
     });
 
-    context('_resolve(/file.ext, prev, includePaths)', () => {
+    context('_resolve(/file.ext, { prev, includePaths })', () => {
         dirMatrix.forEach((dir) => {
             prevMatrix.forEach((prev) =>{
                 files.forEach((file) => {
 
                     test(`@import /${dir}${file} from ${prev} with includePaths resolves correctly`, () =>{
                         let url = `/${dir}${file}`;
-                        let matches = _resolve(url, prev, includePaths);
+                        let matches = _resolve(url, { prev, includePaths });
 
                         assert.equal(matches.length, 1);
                         assert.equal(matches[0], path.resolve('/', `${dir}${file}`));
@@ -141,14 +141,14 @@ suite('_resolve absolute paths', () => {
         });
     });
 
-    context('_resolve(/ambiguous, prev)', () => {
+    context('_resolve(/ambiguous, { prev })', () => {
         dirMatrix.forEach((dir) => {
             prevMatrix.forEach((prev) =>{
                 ambiguousFiles.forEach((file) => {
 
                     test(`@import /${dir}${file} from ${prev} resolves correctly`, () =>{
                         let url = `/${dir}${file}`;
-                        let matches = _resolve(url, prev);
+                        let matches = _resolve(url, { prev });
 
                         if (file.startsWith('_')) {
                             assert.equal(matches.length, 7);
@@ -178,13 +178,13 @@ suite('_resolve absolute paths', () => {
         });
     });
 
-    context('_resolve(/ambiguous, includePaths)', () => {
+    context('_resolve(/ambiguous, { includePaths })', () => {
         dirMatrix.forEach((dir) => {
             ambiguousFiles.forEach((file) => {
 
                 test(`@import /${dir}${file} with includePaths resolves correctly`, () =>{
                     let url = `/${dir}${file}`;
-                    let matches = _resolve(url, '', includePaths);
+                    let matches = _resolve(url, { includePaths });
 
                     if (file.startsWith('_')) {
                         assert.equal(matches.length, 7);
@@ -213,14 +213,14 @@ suite('_resolve absolute paths', () => {
         });
     });
 
-    context('_resolve(/ambiguous, prev, includePaths)', () => {
+    context('_resolve(/ambiguous, { prev, includePaths })', () => {
         dirMatrix.forEach((dir) => {
             prevMatrix.forEach((prev) =>{
                 ambiguousFiles.forEach((file) => {
 
                     test(`@import /${dir}${file} from ${prev} with includePaths resolves correctly`, () =>{
                         let url = `/${dir}${file}`;
-                        let matches = _resolve(url, prev, includePaths);
+                        let matches = _resolve(url, { prev, includePaths });
 
                         if (file.startsWith('_')) {
                             assert.equal(matches.length, 7);

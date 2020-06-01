@@ -54,14 +54,14 @@ suite('_resolve relative paths', () => {
         });
     });
 
-    context('_resolve(file.ext, prev)', () => {
+    context('_resolve(file.ext, { prev })', () => {
         dirMatrix.forEach((dir) => {
             prevMatrix.forEach((prev) =>{
                 files.forEach((file) => {
 
                     test(`@import ${dir}${file} from ${prev} resolves correctly`, () =>{
                         let url = `${dir}${file}`;
-                        let matches = _resolve(url, prev);
+                        let matches = _resolve(url, { prev });
                         let prevResolved = path.extname(prev) === '' ? prev : path.dirname(prev);
 
                         assert.equal(matches.length, 1);
@@ -73,13 +73,13 @@ suite('_resolve relative paths', () => {
         });
     });
 
-    context('_resolve(file.ext, includePaths)', () => {
+    context('_resolve(file.ext, { includePaths })', () => {
         dirMatrix.forEach((dir) => {
             files.forEach((file) => {
 
                 test(`@import ${dir}${file} with includePaths resolves correctly`, () =>{
                     let url = `${dir}${file}`;
-                    let matches = _resolve(url, '', includePaths);
+                    let matches = _resolve(url, { includePaths });
 
                     if (url.startsWith("../") || url.startsWith("./../")) {
                         assert.equal(matches.length, 1);
@@ -97,14 +97,14 @@ suite('_resolve relative paths', () => {
         });
     });
 
-    context('_resolve(file.ext, prev, includePaths)', () => {
+    context('_resolve(file.ext, { prev, includePaths })', () => {
         dirMatrix.forEach((dir) => {
             prevMatrix.forEach((prev) =>{
                 files.forEach((file) => {
 
                     test(`@import ${dir}${file} from ${prev} with includePaths resolves correctly`, () =>{
                         let url = `${dir}${file}`;
-                        let matches = _resolve(url, prev, includePaths);
+                        let matches = _resolve(url, { prev, includePaths });
                         let prevResolved = path.extname(prev) === '' ? prev : path.dirname(prev);
 
                         if (url.startsWith("../") || url.startsWith("./../")) {
@@ -159,14 +159,14 @@ suite('_resolve relative paths', () => {
         });
     });
 
-    context('_resolve(ambiguous, prev)', () => {
+    context('_resolve(ambiguous, { prev })', () => {
         dirMatrix.forEach((dir) => {
             prevMatrix.forEach((prev) =>{
                 ambiguousFiles.forEach((file) => {
 
                     test(`@import ${dir}${file} from ${prev} resolves correctly`, () =>{
                         let url = `${dir}${file}`;
-                        let matches = _resolve(url, prev);
+                        let matches = _resolve(url, { prev });
                         let prevResolved = path.extname(prev) === '' ? prev : path.dirname(prev);
 
                         if (file.startsWith('_')) {
@@ -197,13 +197,13 @@ suite('_resolve relative paths', () => {
         });
     });
 
-    context('_resolve(ambiguous, includePaths)', () => {
+    context('_resolve(ambiguous, { includePaths })', () => {
         dirMatrix.forEach((dir) => {
             ambiguousFiles.forEach((file) => {
 
                 test(`@import ${dir}${file} with includePaths resolves correctly`, () =>{
                     let url = `${dir}${file}`;
-                    let matches = _resolve(url, '', includePaths);
+                    let matches = _resolve(url, { includePaths });
 
                     if (url.startsWith("../") || url.startsWith("./../")) {
                         if (file.startsWith('_')) {
@@ -304,14 +304,14 @@ suite('_resolve relative paths', () => {
         });
     });
 
-    context('_resolve(ambiguous, prev, includePaths)', () => {
+    context('_resolve(ambiguous, { prev, includePaths })', () => {
         dirMatrix.forEach((dir) => {
             prevMatrix.forEach((prev) =>{
                 ambiguousFiles.forEach((file) => {
 
                     test(`@import ${dir}${file} from ${prev} with includePaths resolves correctly`, () =>{
                         let url = `${dir}${file}`;
-                        let matches = _resolve(url, prev, includePaths);
+                        let matches = _resolve(url, { prev, includePaths });
                         let prevResolved = path.extname(prev) === '' ? prev : path.dirname(prev);
 
                         if (url.startsWith("../") || url.startsWith("./../")) {

@@ -40,21 +40,22 @@ The api has only two methods with both using the same params.
 
 ### resolve()
 
-* Signature: `function resolve( url: String, prev?: String, includePaths?: Array<String>) : String`
+* Signature: `function resolve( url: String, options: { prev?: String, includePaths?: Array<String>, nodeModules?: String } ) : String`
 
 Just a facade -- passes everything down to `_resove` and waits for results.
 
-### resolve()
+### _resolve()
 
-* Signature: `function _resolve( url: String, prev?: String, includePaths?: Array<String>) : Array<String>`
+* Signature: `function _resolve( url: String, options: { prev?: String, includePaths?: Array<String>, nodeModules?: String } ) : Array<String>`
 
 Does the actual work, collects **unique** matches and returns them.
 
 ### parameters
 
 * `url` -- Path to a file
-* `prev` -- Path to file (or dir) to be used for resolving `url`. Ideally, it should not be empty and should be the previously resolved path.
-* `includePaths` (Optional) -- An array of paths that the script can look in when attempting to resolve `@import` declarations. When resolving node_module (`~`), absolute (`/`) or parent (`../`) imports, this has no effect.
+* `options.prev` (Optional) -- Path to file (or dir) to be used for resolving `url`. Ideally, it should not be empty and should be the previously resolved path.
+* `options.includePaths` (Optional) -- An array of paths that the script can look in when attempting to resolve `@import` declarations. When resolving node_module (`~`), absolute (`/`) or parent (`../`) imports, this has no effect.
+* `options.nodeModules` (Optional) -- Location of `node_modules` when resolving. Defaults to `./node_modules`.
 
 ## Heavily Opinionated and Probably Very Shady Algorithm
 

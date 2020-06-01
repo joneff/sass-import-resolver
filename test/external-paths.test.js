@@ -40,13 +40,13 @@ suite('_resolve external paths', () => {
         });
     });
 
-    context('_resolve(external, prev)', () => {
+    context('_resolve(external, { prev })', () => {
         fileMathrix.forEach((file) => {
             prevMatrix.forEach((prev) => {
 
                 test(`@import ${file} from ${prev} resolves correctly`, () =>{
                     let url = `${file}`;
-                    let matches = _resolve(url, prev);
+                    let matches = _resolve(url, { prev });
 
                     assert.equal(matches.length, 1);
                     assert.equal(matches[0], url);
@@ -56,12 +56,12 @@ suite('_resolve external paths', () => {
         });
     });
 
-    context('_resolve(external, includePaths)', () => {
+    context('_resolve(external, { includePaths })', () => {
         fileMathrix.forEach((file) => {
 
             test(`@import ${file} with includePaths resolves correctly`, () =>{
                 let url = `${file}`;
-                let matches = _resolve(url, '', includePaths);
+                let matches = _resolve(url, { includePaths });
 
                 assert.equal(matches.length, 1);
                 assert.equal(matches[0], url);
@@ -70,13 +70,13 @@ suite('_resolve external paths', () => {
         });
     });
 
-    context('_resolve(external, prev, includePaths)', () => {
+    context('_resolve(external, { prev, includePaths })', () => {
         fileMathrix.forEach((file) => {
             prevMatrix.forEach((prev) => {
 
                 test(`@import ${file} from ${prev} with includePaths resolves correctly`, () =>{
                     let url = `${file}`;
-                    let matches = _resolve(url, prev, includePaths);
+                    let matches = _resolve(url, { prev, includePaths });
 
                     assert.equal(matches.length, 1);
                     assert.equal(matches[0], url);
