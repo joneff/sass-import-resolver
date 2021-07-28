@@ -1,11 +1,14 @@
 {
   "name": "@joneff/sass-import-resolver",
-  "version": "0.3.1",
   "description": "Resolves the path of sass imports, following a heavily opinionated and probably very shady algorithm",
+  "version": "0.3.1",
   "author": "Ivan Zhekov <joneff@gmail.com>",
-  "repository": "joneff/sass-import-resolver",
-  "bugs": "https://github.com/joneff/sass-import-resolver/issues",
-  "license": "ISC",
+  "license": "MIT",
+  "keywords": [
+    "sass",
+    "import",
+    "resolver"
+  ],
   "main": "index.js",
   "files": [
     "index.js"
@@ -13,23 +16,41 @@
   "directories": {
     "test": "test"
   },
-  "scripts": {
-    "ci": "npm run lint && npm run test",
-    "lint": "eslint **/*.js",
-    "test": "mocha",
-    "preversion": "npm run ci",
-    "postversion": "git push && git push --tags"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/joneff/sass-import-resolver.git"
   },
-  "devDependencies": {
-    "eslint": "^7.0.0",
-    "mocha": "^8.0.1"
+  "bugs": {
+    "url": "https://github.com/joneff/sass-import-resolver/issues"
   },
   "publishConfig": {
     "access": "public"
   },
-  "keywords": [
-    "sass",
-    "import",
-    "resolver"
-  ]
+  "scripts": {
+    "eslint": "eslint **/*.js",
+    "test": "mocha",
+    "mocha-dots": "mocha --reporter dot",
+    "semantic-release": "semantic-release"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^11.0.0",
+    "@commitlint/config-conventional": "^11.0.0",
+    "@commitlint/core": "^11.0.0",
+    "@semantic-release/changelog": "^5.0.0",
+    "@semantic-release/git": "^9.0.0",
+    "eslint": "^7.0.0",
+    "husky": "^4.3.8",
+    "mocha": "^8.0.1",
+    "semantic-release": "^17.4.4"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run eslint",
+      "pre-push": "npm run eslint && npm run mocha-dots",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
+  "dependencies": {
+    "lodash.merge": "^4.6.2"
+  }
 }

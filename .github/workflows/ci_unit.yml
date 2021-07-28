@@ -1,0 +1,54 @@
+name: CI | Unit
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  CI: true
+
+on:
+  push:
+    branches:
+      - '**'
+
+jobs:
+
+  run-tests:
+    name: Run tests
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout branch
+        uses: actions/checkout@v2
+
+      - name: Setup node
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14.x
+
+      - name: Install
+        run: npm ci
+
+      - name: Lint
+        run: npm run eslint
+
+      - name: Tests
+        run: npm run mocha-dots
+
+  ci-unit:
+    name: CI | Unit
+    needs: run-tests
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      # IMPORTANT NOTE
+      #
+      # You can not set a workflow to be status check. The job is. Hence the trickery...
+
+      - name: Done
+        run: echo "Done!"

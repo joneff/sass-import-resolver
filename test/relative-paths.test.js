@@ -18,7 +18,7 @@ const prevMatrix = [
     '/path/to/dir',
     '/path/to/file.ext'
 ];
-const files = [
+const fileMathrix = [
     'file.css',     '_file.css',    // eslint-disable-line no-multi-spaces
     'file.scss',    '_file.scss',   // eslint-disable-line no-multi-spaces
     'file.sass',    '_file.sass'    // eslint-disable-line no-multi-spaces
@@ -40,14 +40,14 @@ suite('_resolve relative paths', () => {
 
     context('_resolve(file.ext)', () => {
         dirMatrix.forEach((dir) => {
-            files.forEach((file) => {
+            fileMathrix.forEach((filePath) => {
 
-                test(`@import ${dir}${file} resolves correctly`, () =>{
-                    let url = `${dir}${file}`;
-                    let matches = _resolve(url);
+                test(`@import ${dir}${filePath} resolves correctly`, () =>{
+                    let file = `${dir}${filePath}`;
+                    let matches = _resolve({ file });
 
-                    assert.equal(matches.length, 1);
-                    assert.equal(matches[0], path.resolve(`${dir}${file}`));
+                    assert.strictEqual(matches.length, 1);
+                    assert.strictEqual(matches[0], path.resolve(`${dir}${filePath}`));
                 });
 
             });
@@ -57,15 +57,15 @@ suite('_resolve relative paths', () => {
     context('_resolve(file.ext, { prev })', () => {
         dirMatrix.forEach((dir) => {
             prevMatrix.forEach((prev) =>{
-                files.forEach((file) => {
+                fileMathrix.forEach((filePath) => {
 
-                    test(`@import ${dir}${file} from ${prev} resolves correctly`, () =>{
-                        let url = `${dir}${file}`;
-                        let matches = _resolve(url, { prev });
+                    test(`@import ${dir}${filePath} from ${prev} resolves correctly`, () =>{
+                        let file = `${dir}${filePath}`;
+                        let matches = _resolve({ file, prev });
                         let prevResolved = path.extname(prev) === '' ? prev : path.dirname(prev);
 
-                        assert.equal(matches.length, 1);
-                        assert.equal(matches[0], path.resolve(prevResolved, `${dir}${file}`));
+                        assert.strictEqual(matches.length, 1);
+                        assert.strictEqual(matches[0], path.resolve(prevResolved, `${dir}${filePath}`));
                     });
 
                 });
@@ -75,21 +75,21 @@ suite('_resolve relative paths', () => {
 
     context('_resolve(file.ext, { includePaths })', () => {
         dirMatrix.forEach((dir) => {
-            files.forEach((file) => {
+            fileMathrix.forEach((filePath) => {
 
-                test(`@import ${dir}${file} with includePaths resolves correctly`, () =>{
-                    let url = `${dir}${file}`;
-                    let matches = _resolve(url, { includePaths });
+                test(`@import ${dir}${filePath} with includePaths resolves correctly`, () =>{
+                    let file = `${dir}${filePath}`;
+                    let matches = _resolve({ file, includePaths });
 
-                    if (url.startsWith("../") || url.startsWith("./../")) {
-                        assert.equal(matches.length, 1);
-                        assert.equal(matches[0], path.resolve(`${dir}${file}`));
+                    if (file.startsWith('.')) {
+                        assert.strictEqual(matches.length, 1);
+                        assert.strictEqual(matches[0], path.resolve(`${dir}${filePath}`));
                     } else {
-                        assert.equal(matches.length, 4);
-                        assert.equal(matches[0], path.resolve(`${dir}${file}`));
-                        assert.equal(matches[1], path.resolve(includePaths[0], `${dir}${file}`));
-                        assert.equal(matches[2], path.resolve(includePaths[1], `${dir}${file}`));
-                        assert.equal(matches[3], path.resolve(includePaths[2], `${dir}${file}`));
+                        assert.strictEqual(matches.length, 4);
+                        assert.strictEqual(matches[0], path.resolve(`${dir}${filePath}`));
+                        assert.strictEqual(matches[1], path.resolve(includePaths[0], `${dir}${filePath}`));
+                        assert.strictEqual(matches[2], path.resolve(includePaths[1], `${dir}${filePath}`));
+                        assert.strictEqual(matches[3], path.resolve(includePaths[2], `${dir}${filePath}`));
                     }
                 });
 
@@ -100,22 +100,22 @@ suite('_resolve relative paths', () => {
     context('_resolve(file.ext, { prev, includePaths })', () => {
         dirMatrix.forEach((dir) => {
             prevMatrix.forEach((prev) =>{
-                files.forEach((file) => {
+                fileMathrix.forEach((filePath) => {
 
-                    test(`@import ${dir}${file} from ${prev} with includePaths resolves correctly`, () =>{
-                        let url = `${dir}${file}`;
-                        let matches = _resolve(url, { prev, includePaths });
+                    test(`@import ${dir}${filePath} from ${prev} with includePaths resolves correctly`, () =>{
+                        let file = `${dir}${filePath}`;
+                        let matches = _resolve({ file, prev, includePaths });
                         let prevResolved = path.extname(prev) === '' ? prev : path.dirname(prev);
 
-                        if (url.startsWith("../") || url.startsWith("./../")) {
-                            assert.equal(matches.length, 1);
-                            assert.equal(matches[0], path.resolve(prevResolved, `${dir}${file}`));
+                        if (file.startsWith('.')) {
+                            assert.strictEqual(matches.length, 1);
+                            assert.strictEqual(matches[0], path.resolve(prevResolved, `${dir}${filePath}`));
                         } else {
-                            assert.equal(matches.length, 4);
-                            assert.equal(matches[0], path.resolve(prevResolved, `${dir}${file}`));
-                            assert.equal(matches[1], path.resolve(includePaths[0], `${dir}${file}`));
-                            assert.equal(matches[2], path.resolve(includePaths[1], `${dir}${file}`));
-                            assert.equal(matches[3], path.resolve(includePaths[2], `${dir}${file}`));
+                            assert.strictEqual(matches.length, 4);
+                            assert.strictEqual(matches[0], path.resolve(prevResolved, `${dir}${filePath}`));
+                            assert.strictEqual(matches[1], path.resolve(includePaths[0], `${dir}${filePath}`));
+                            assert.strictEqual(matches[2], path.resolve(includePaths[1], `${dir}${filePath}`));
+                            assert.strictEqual(matches[3], path.resolve(includePaths[2], `${dir}${filePath}`));
                         }
                     });
 
@@ -126,32 +126,32 @@ suite('_resolve relative paths', () => {
 
     context('_resolve(ambiguous)', () => {
         dirMatrix.forEach((dir) => {
-            ambiguousFiles.forEach((file) => {
+            ambiguousFiles.forEach((filePath) => {
 
-                test(`@import ${dir}${file} resolves correctly`, () =>{
-                    let url = `${dir}${file}`;
-                    let matches = _resolve(url);
+                test(`@import ${dir}${filePath} resolves correctly`, () =>{
+                    let file = `${dir}${filePath}`;
+                    let matches = _resolve({ file });
 
-                    if (file.startsWith('_')) {
-                        assert.equal(matches.length, 7);
-                        assert.equal(matches[0], path.resolve(`${dir}${file}.css`));
-                        assert.equal(matches[1], path.resolve(`${dir}${file}.scss`));
-                        assert.equal(matches[2], path.resolve(`${dir}${file}.sass`));
-                        assert.equal(matches[3], path.resolve(`${dir}${file}/index.scss`));
-                        assert.equal(matches[4], path.resolve(`${dir}${file}/index.sass`));
-                        assert.equal(matches[5], path.resolve(`${dir}${file}/_index.scss`));
-                        assert.equal(matches[6], path.resolve(`${dir}${file}/_index.sass`));
+                    if (filePath.startsWith('_')) {
+                        assert.strictEqual(matches.length, 7);
+                        assert.strictEqual(matches[0], path.resolve(`${dir}${filePath}.css`));
+                        assert.strictEqual(matches[1], path.resolve(`${dir}${filePath}.scss`));
+                        assert.strictEqual(matches[2], path.resolve(`${dir}${filePath}.sass`));
+                        assert.strictEqual(matches[3], path.resolve(`${dir}${filePath}/index.scss`));
+                        assert.strictEqual(matches[4], path.resolve(`${dir}${filePath}/index.sass`));
+                        assert.strictEqual(matches[5], path.resolve(`${dir}${filePath}/_index.scss`));
+                        assert.strictEqual(matches[6], path.resolve(`${dir}${filePath}/_index.sass`));
                     } else {
-                        assert.equal(matches.length, 9);
-                        assert.equal(matches[0], path.resolve(`${dir}${file}.css`));
-                        assert.equal(matches[1], path.resolve(`${dir}${file}.scss`));
-                        assert.equal(matches[2], path.resolve(`${dir}${file}.sass`));
-                        assert.equal(matches[3], path.resolve(`${dir}_${file}.scss`));
-                        assert.equal(matches[4], path.resolve(`${dir}_${file}.sass`));
-                        assert.equal(matches[5], path.resolve(`${dir}${file}/index.scss`));
-                        assert.equal(matches[6], path.resolve(`${dir}${file}/index.sass`));
-                        assert.equal(matches[7], path.resolve(`${dir}${file}/_index.scss`));
-                        assert.equal(matches[8], path.resolve(`${dir}${file}/_index.sass`));
+                        assert.strictEqual(matches.length, 9);
+                        assert.strictEqual(matches[0], path.resolve(`${dir}${filePath}.css`));
+                        assert.strictEqual(matches[1], path.resolve(`${dir}${filePath}.scss`));
+                        assert.strictEqual(matches[2], path.resolve(`${dir}${filePath}.sass`));
+                        assert.strictEqual(matches[3], path.resolve(`${dir}_${filePath}.scss`));
+                        assert.strictEqual(matches[4], path.resolve(`${dir}_${filePath}.sass`));
+                        assert.strictEqual(matches[5], path.resolve(`${dir}${filePath}/index.scss`));
+                        assert.strictEqual(matches[6], path.resolve(`${dir}${filePath}/index.sass`));
+                        assert.strictEqual(matches[7], path.resolve(`${dir}${filePath}/_index.scss`));
+                        assert.strictEqual(matches[8], path.resolve(`${dir}${filePath}/_index.sass`));
                     }
                 });
 
@@ -162,33 +162,33 @@ suite('_resolve relative paths', () => {
     context('_resolve(ambiguous, { prev })', () => {
         dirMatrix.forEach((dir) => {
             prevMatrix.forEach((prev) =>{
-                ambiguousFiles.forEach((file) => {
+                ambiguousFiles.forEach((filePath) => {
 
-                    test(`@import ${dir}${file} from ${prev} resolves correctly`, () =>{
-                        let url = `${dir}${file}`;
-                        let matches = _resolve(url, { prev });
+                    test(`@import ${dir}${filePath} from ${prev} resolves correctly`, () =>{
+                        let file = `${dir}${filePath}`;
+                        let matches = _resolve({ file, prev });
                         let prevResolved = path.extname(prev) === '' ? prev : path.dirname(prev);
 
-                        if (file.startsWith('_')) {
-                            assert.equal(matches.length, 7);
-                            assert.equal(matches[0], path.resolve(prevResolved, `${dir}${file}.css`));
-                            assert.equal(matches[1], path.resolve(prevResolved, `${dir}${file}.scss`));
-                            assert.equal(matches[2], path.resolve(prevResolved, `${dir}${file}.sass`));
-                            assert.equal(matches[3], path.resolve(prevResolved, `${dir}${file}/index.scss`));
-                            assert.equal(matches[4], path.resolve(prevResolved, `${dir}${file}/index.sass`));
-                            assert.equal(matches[5], path.resolve(prevResolved, `${dir}${file}/_index.scss`));
-                            assert.equal(matches[6], path.resolve(prevResolved, `${dir}${file}/_index.sass`));
+                        if (filePath.startsWith('_')) {
+                            assert.strictEqual(matches.length, 7);
+                            assert.strictEqual(matches[0], path.resolve(prevResolved, `${dir}${filePath}.css`));
+                            assert.strictEqual(matches[1], path.resolve(prevResolved, `${dir}${filePath}.scss`));
+                            assert.strictEqual(matches[2], path.resolve(prevResolved, `${dir}${filePath}.sass`));
+                            assert.strictEqual(matches[3], path.resolve(prevResolved, `${dir}${filePath}/index.scss`));
+                            assert.strictEqual(matches[4], path.resolve(prevResolved, `${dir}${filePath}/index.sass`));
+                            assert.strictEqual(matches[5], path.resolve(prevResolved, `${dir}${filePath}/_index.scss`));
+                            assert.strictEqual(matches[6], path.resolve(prevResolved, `${dir}${filePath}/_index.sass`));
                         } else {
-                            assert.equal(matches.length, 9);
-                            assert.equal(matches[0], path.resolve(prevResolved, `${dir}${file}.css`));
-                            assert.equal(matches[1], path.resolve(prevResolved, `${dir}${file}.scss`));
-                            assert.equal(matches[2], path.resolve(prevResolved, `${dir}${file}.sass`));
-                            assert.equal(matches[3], path.resolve(prevResolved, `${dir}_${file}.scss`));
-                            assert.equal(matches[4], path.resolve(prevResolved, `${dir}_${file}.sass`));
-                            assert.equal(matches[5], path.resolve(prevResolved, `${dir}${file}/index.scss`));
-                            assert.equal(matches[6], path.resolve(prevResolved, `${dir}${file}/index.sass`));
-                            assert.equal(matches[7], path.resolve(prevResolved, `${dir}${file}/_index.scss`));
-                            assert.equal(matches[8], path.resolve(prevResolved, `${dir}${file}/_index.sass`));
+                            assert.strictEqual(matches.length, 9);
+                            assert.strictEqual(matches[0], path.resolve(prevResolved, `${dir}${filePath}.css`));
+                            assert.strictEqual(matches[1], path.resolve(prevResolved, `${dir}${filePath}.scss`));
+                            assert.strictEqual(matches[2], path.resolve(prevResolved, `${dir}${filePath}.sass`));
+                            assert.strictEqual(matches[3], path.resolve(prevResolved, `${dir}_${filePath}.scss`));
+                            assert.strictEqual(matches[4], path.resolve(prevResolved, `${dir}_${filePath}.sass`));
+                            assert.strictEqual(matches[5], path.resolve(prevResolved, `${dir}${filePath}/index.scss`));
+                            assert.strictEqual(matches[6], path.resolve(prevResolved, `${dir}${filePath}/index.sass`));
+                            assert.strictEqual(matches[7], path.resolve(prevResolved, `${dir}${filePath}/_index.scss`));
+                            assert.strictEqual(matches[8], path.resolve(prevResolved, `${dir}${filePath}/_index.sass`));
                         }
                     });
 
@@ -199,103 +199,103 @@ suite('_resolve relative paths', () => {
 
     context('_resolve(ambiguous, { includePaths })', () => {
         dirMatrix.forEach((dir) => {
-            ambiguousFiles.forEach((file) => {
+            ambiguousFiles.forEach((filePath) => {
 
-                test(`@import ${dir}${file} with includePaths resolves correctly`, () =>{
-                    let url = `${dir}${file}`;
-                    let matches = _resolve(url, { includePaths });
+                test(`@import ${dir}${filePath} with includePaths resolves correctly`, () =>{
+                    let file = `${dir}${filePath}`;
+                    let matches = _resolve({ file, includePaths });
 
-                    if (url.startsWith("../") || url.startsWith("./../")) {
-                        if (file.startsWith('_')) {
-                            assert.equal(matches.length, 7);
-                            assert.equal(matches[0], path.resolve(`${dir}${file}.css`));
-                            assert.equal(matches[1], path.resolve(`${dir}${file}.scss`));
-                            assert.equal(matches[2], path.resolve(`${dir}${file}.sass`));
-                            assert.equal(matches[3], path.resolve(`${dir}${file}/index.scss`));
-                            assert.equal(matches[4], path.resolve(`${dir}${file}/index.sass`));
-                            assert.equal(matches[5], path.resolve(`${dir}${file}/_index.scss`));
-                            assert.equal(matches[6], path.resolve(`${dir}${file}/_index.sass`));
+                    if (file.startsWith('.')) {
+                        if (filePath.startsWith('_')) {
+                            assert.strictEqual(matches.length, 7);
+                            assert.strictEqual(matches[0], path.resolve(`${dir}${filePath}.css`));
+                            assert.strictEqual(matches[1], path.resolve(`${dir}${filePath}.scss`));
+                            assert.strictEqual(matches[2], path.resolve(`${dir}${filePath}.sass`));
+                            assert.strictEqual(matches[3], path.resolve(`${dir}${filePath}/index.scss`));
+                            assert.strictEqual(matches[4], path.resolve(`${dir}${filePath}/index.sass`));
+                            assert.strictEqual(matches[5], path.resolve(`${dir}${filePath}/_index.scss`));
+                            assert.strictEqual(matches[6], path.resolve(`${dir}${filePath}/_index.sass`));
                         } else {
-                            assert.equal(matches.length, 9);
-                            assert.equal(matches[0], path.resolve(`${dir}${file}.css`));
-                            assert.equal(matches[1], path.resolve(`${dir}${file}.scss`));
-                            assert.equal(matches[2], path.resolve(`${dir}${file}.sass`));
-                            assert.equal(matches[3], path.resolve(`${dir}_${file}.scss`));
-                            assert.equal(matches[4], path.resolve(`${dir}_${file}.sass`));
-                            assert.equal(matches[5], path.resolve(`${dir}${file}/index.scss`));
-                            assert.equal(matches[6], path.resolve(`${dir}${file}/index.sass`));
-                            assert.equal(matches[7], path.resolve(`${dir}${file}/_index.scss`));
-                            assert.equal(matches[8], path.resolve(`${dir}${file}/_index.sass`));
+                            assert.strictEqual(matches.length, 9);
+                            assert.strictEqual(matches[0], path.resolve(`${dir}${filePath}.css`));
+                            assert.strictEqual(matches[1], path.resolve(`${dir}${filePath}.scss`));
+                            assert.strictEqual(matches[2], path.resolve(`${dir}${filePath}.sass`));
+                            assert.strictEqual(matches[3], path.resolve(`${dir}_${filePath}.scss`));
+                            assert.strictEqual(matches[4], path.resolve(`${dir}_${filePath}.sass`));
+                            assert.strictEqual(matches[5], path.resolve(`${dir}${filePath}/index.scss`));
+                            assert.strictEqual(matches[6], path.resolve(`${dir}${filePath}/index.sass`));
+                            assert.strictEqual(matches[7], path.resolve(`${dir}${filePath}/_index.scss`));
+                            assert.strictEqual(matches[8], path.resolve(`${dir}${filePath}/_index.sass`));
                         }
                     } else {
-                        if (file.startsWith('_')) {
-                            assert.equal(matches.length, 28);
-                            assert.equal(matches[0], path.resolve(`${dir}${file}.css`));
-                            assert.equal(matches[1], path.resolve(`${dir}${file}.scss`));
-                            assert.equal(matches[2], path.resolve(`${dir}${file}.sass`));
-                            assert.equal(matches[3], path.resolve(`${dir}${file}/index.scss`));
-                            assert.equal(matches[4], path.resolve(`${dir}${file}/index.sass`));
-                            assert.equal(matches[5], path.resolve(`${dir}${file}/_index.scss`));
-                            assert.equal(matches[6], path.resolve(`${dir}${file}/_index.sass`));
-                            assert.equal(matches[7], path.resolve(includePaths[0], `${dir}${file}.css`));
-                            assert.equal(matches[8], path.resolve(includePaths[0], `${dir}${file}.scss`));
-                            assert.equal(matches[9], path.resolve(includePaths[0], `${dir}${file}.sass`));
-                            assert.equal(matches[10], path.resolve(includePaths[0], `${dir}${file}/index.scss`));
-                            assert.equal(matches[11], path.resolve(includePaths[0], `${dir}${file}/index.sass`));
-                            assert.equal(matches[12], path.resolve(includePaths[0], `${dir}${file}/_index.scss`));
-                            assert.equal(matches[13], path.resolve(includePaths[0], `${dir}${file}/_index.sass`));
-                            assert.equal(matches[14], path.resolve(includePaths[1], `${dir}${file}.css`));
-                            assert.equal(matches[15], path.resolve(includePaths[1], `${dir}${file}.scss`));
-                            assert.equal(matches[16], path.resolve(includePaths[1], `${dir}${file}.sass`));
-                            assert.equal(matches[17], path.resolve(includePaths[1], `${dir}${file}/index.scss`));
-                            assert.equal(matches[18], path.resolve(includePaths[1], `${dir}${file}/index.sass`));
-                            assert.equal(matches[19], path.resolve(includePaths[1], `${dir}${file}/_index.scss`));
-                            assert.equal(matches[20], path.resolve(includePaths[1], `${dir}${file}/_index.sass`));
-                            assert.equal(matches[21], path.resolve(includePaths[2], `${dir}${file}.css`));
-                            assert.equal(matches[22], path.resolve(includePaths[2], `${dir}${file}.scss`));
-                            assert.equal(matches[23], path.resolve(includePaths[2], `${dir}${file}.sass`));
-                            assert.equal(matches[24], path.resolve(includePaths[2], `${dir}${file}/index.scss`));
-                            assert.equal(matches[25], path.resolve(includePaths[2], `${dir}${file}/index.sass`));
-                            assert.equal(matches[26], path.resolve(includePaths[2], `${dir}${file}/_index.scss`));
-                            assert.equal(matches[27], path.resolve(includePaths[2], `${dir}${file}/_index.sass`));
+                        if (filePath.startsWith('_')) {
+                            assert.strictEqual(matches.length, 28);
+                            assert.strictEqual(matches[0], path.resolve(`${dir}${filePath}.css`));
+                            assert.strictEqual(matches[1], path.resolve(`${dir}${filePath}.scss`));
+                            assert.strictEqual(matches[2], path.resolve(`${dir}${filePath}.sass`));
+                            assert.strictEqual(matches[3], path.resolve(`${dir}${filePath}/index.scss`));
+                            assert.strictEqual(matches[4], path.resolve(`${dir}${filePath}/index.sass`));
+                            assert.strictEqual(matches[5], path.resolve(`${dir}${filePath}/_index.scss`));
+                            assert.strictEqual(matches[6], path.resolve(`${dir}${filePath}/_index.sass`));
+                            assert.strictEqual(matches[7], path.resolve(includePaths[0], `${dir}${filePath}.css`));
+                            assert.strictEqual(matches[8], path.resolve(includePaths[0], `${dir}${filePath}.scss`));
+                            assert.strictEqual(matches[9], path.resolve(includePaths[0], `${dir}${filePath}.sass`));
+                            assert.strictEqual(matches[10], path.resolve(includePaths[0], `${dir}${filePath}/index.scss`));
+                            assert.strictEqual(matches[11], path.resolve(includePaths[0], `${dir}${filePath}/index.sass`));
+                            assert.strictEqual(matches[12], path.resolve(includePaths[0], `${dir}${filePath}/_index.scss`));
+                            assert.strictEqual(matches[13], path.resolve(includePaths[0], `${dir}${filePath}/_index.sass`));
+                            assert.strictEqual(matches[14], path.resolve(includePaths[1], `${dir}${filePath}.css`));
+                            assert.strictEqual(matches[15], path.resolve(includePaths[1], `${dir}${filePath}.scss`));
+                            assert.strictEqual(matches[16], path.resolve(includePaths[1], `${dir}${filePath}.sass`));
+                            assert.strictEqual(matches[17], path.resolve(includePaths[1], `${dir}${filePath}/index.scss`));
+                            assert.strictEqual(matches[18], path.resolve(includePaths[1], `${dir}${filePath}/index.sass`));
+                            assert.strictEqual(matches[19], path.resolve(includePaths[1], `${dir}${filePath}/_index.scss`));
+                            assert.strictEqual(matches[20], path.resolve(includePaths[1], `${dir}${filePath}/_index.sass`));
+                            assert.strictEqual(matches[21], path.resolve(includePaths[2], `${dir}${filePath}.css`));
+                            assert.strictEqual(matches[22], path.resolve(includePaths[2], `${dir}${filePath}.scss`));
+                            assert.strictEqual(matches[23], path.resolve(includePaths[2], `${dir}${filePath}.sass`));
+                            assert.strictEqual(matches[24], path.resolve(includePaths[2], `${dir}${filePath}/index.scss`));
+                            assert.strictEqual(matches[25], path.resolve(includePaths[2], `${dir}${filePath}/index.sass`));
+                            assert.strictEqual(matches[26], path.resolve(includePaths[2], `${dir}${filePath}/_index.scss`));
+                            assert.strictEqual(matches[27], path.resolve(includePaths[2], `${dir}${filePath}/_index.sass`));
                         } else {
-                            assert.equal(matches.length, 36);
-                            assert.equal(matches[0], path.resolve(`${dir}${file}.css`));
-                            assert.equal(matches[1], path.resolve(`${dir}${file}.scss`));
-                            assert.equal(matches[2], path.resolve(`${dir}${file}.sass`));
-                            assert.equal(matches[3], path.resolve(`${dir}_${file}.scss`));
-                            assert.equal(matches[4], path.resolve(`${dir}_${file}.sass`));
-                            assert.equal(matches[5], path.resolve(`${dir}${file}/index.scss`));
-                            assert.equal(matches[6], path.resolve(`${dir}${file}/index.sass`));
-                            assert.equal(matches[7], path.resolve(`${dir}${file}/_index.scss`));
-                            assert.equal(matches[8], path.resolve(`${dir}${file}/_index.sass`));
-                            assert.equal(matches[9], path.resolve(includePaths[0], `${dir}${file}.css`));
-                            assert.equal(matches[10], path.resolve(includePaths[0], `${dir}${file}.scss`));
-                            assert.equal(matches[11], path.resolve(includePaths[0], `${dir}${file}.sass`));
-                            assert.equal(matches[12], path.resolve(includePaths[0], `${dir}_${file}.scss`));
-                            assert.equal(matches[13], path.resolve(includePaths[0], `${dir}_${file}.sass`));
-                            assert.equal(matches[14], path.resolve(includePaths[0], `${dir}${file}/index.scss`));
-                            assert.equal(matches[15], path.resolve(includePaths[0], `${dir}${file}/index.sass`));
-                            assert.equal(matches[16], path.resolve(includePaths[0], `${dir}${file}/_index.scss`));
-                            assert.equal(matches[17], path.resolve(includePaths[0], `${dir}${file}/_index.sass`));
-                            assert.equal(matches[18], path.resolve(includePaths[1], `${dir}${file}.css`));
-                            assert.equal(matches[19], path.resolve(includePaths[1], `${dir}${file}.scss`));
-                            assert.equal(matches[20], path.resolve(includePaths[1], `${dir}${file}.sass`));
-                            assert.equal(matches[21], path.resolve(includePaths[1], `${dir}_${file}.scss`));
-                            assert.equal(matches[22], path.resolve(includePaths[1], `${dir}_${file}.sass`));
-                            assert.equal(matches[23], path.resolve(includePaths[1], `${dir}${file}/index.scss`));
-                            assert.equal(matches[24], path.resolve(includePaths[1], `${dir}${file}/index.sass`));
-                            assert.equal(matches[25], path.resolve(includePaths[1], `${dir}${file}/_index.scss`));
-                            assert.equal(matches[26], path.resolve(includePaths[1], `${dir}${file}/_index.sass`));
-                            assert.equal(matches[27], path.resolve(includePaths[2], `${dir}${file}.css`));
-                            assert.equal(matches[28], path.resolve(includePaths[2], `${dir}${file}.scss`));
-                            assert.equal(matches[29], path.resolve(includePaths[2], `${dir}${file}.sass`));
-                            assert.equal(matches[30], path.resolve(includePaths[2], `${dir}_${file}.scss`));
-                            assert.equal(matches[31], path.resolve(includePaths[2], `${dir}_${file}.sass`));
-                            assert.equal(matches[32], path.resolve(includePaths[2], `${dir}${file}/index.scss`));
-                            assert.equal(matches[33], path.resolve(includePaths[2], `${dir}${file}/index.sass`));
-                            assert.equal(matches[34], path.resolve(includePaths[2], `${dir}${file}/_index.scss`));
-                            assert.equal(matches[35], path.resolve(includePaths[2], `${dir}${file}/_index.sass`));
+                            assert.strictEqual(matches.length, 36);
+                            assert.strictEqual(matches[0], path.resolve(`${dir}${filePath}.css`));
+                            assert.strictEqual(matches[1], path.resolve(`${dir}${filePath}.scss`));
+                            assert.strictEqual(matches[2], path.resolve(`${dir}${filePath}.sass`));
+                            assert.strictEqual(matches[3], path.resolve(`${dir}_${filePath}.scss`));
+                            assert.strictEqual(matches[4], path.resolve(`${dir}_${filePath}.sass`));
+                            assert.strictEqual(matches[5], path.resolve(`${dir}${filePath}/index.scss`));
+                            assert.strictEqual(matches[6], path.resolve(`${dir}${filePath}/index.sass`));
+                            assert.strictEqual(matches[7], path.resolve(`${dir}${filePath}/_index.scss`));
+                            assert.strictEqual(matches[8], path.resolve(`${dir}${filePath}/_index.sass`));
+                            assert.strictEqual(matches[9], path.resolve(includePaths[0], `${dir}${filePath}.css`));
+                            assert.strictEqual(matches[10], path.resolve(includePaths[0], `${dir}${filePath}.scss`));
+                            assert.strictEqual(matches[11], path.resolve(includePaths[0], `${dir}${filePath}.sass`));
+                            assert.strictEqual(matches[12], path.resolve(includePaths[0], `${dir}_${filePath}.scss`));
+                            assert.strictEqual(matches[13], path.resolve(includePaths[0], `${dir}_${filePath}.sass`));
+                            assert.strictEqual(matches[14], path.resolve(includePaths[0], `${dir}${filePath}/index.scss`));
+                            assert.strictEqual(matches[15], path.resolve(includePaths[0], `${dir}${filePath}/index.sass`));
+                            assert.strictEqual(matches[16], path.resolve(includePaths[0], `${dir}${filePath}/_index.scss`));
+                            assert.strictEqual(matches[17], path.resolve(includePaths[0], `${dir}${filePath}/_index.sass`));
+                            assert.strictEqual(matches[18], path.resolve(includePaths[1], `${dir}${filePath}.css`));
+                            assert.strictEqual(matches[19], path.resolve(includePaths[1], `${dir}${filePath}.scss`));
+                            assert.strictEqual(matches[20], path.resolve(includePaths[1], `${dir}${filePath}.sass`));
+                            assert.strictEqual(matches[21], path.resolve(includePaths[1], `${dir}_${filePath}.scss`));
+                            assert.strictEqual(matches[22], path.resolve(includePaths[1], `${dir}_${filePath}.sass`));
+                            assert.strictEqual(matches[23], path.resolve(includePaths[1], `${dir}${filePath}/index.scss`));
+                            assert.strictEqual(matches[24], path.resolve(includePaths[1], `${dir}${filePath}/index.sass`));
+                            assert.strictEqual(matches[25], path.resolve(includePaths[1], `${dir}${filePath}/_index.scss`));
+                            assert.strictEqual(matches[26], path.resolve(includePaths[1], `${dir}${filePath}/_index.sass`));
+                            assert.strictEqual(matches[27], path.resolve(includePaths[2], `${dir}${filePath}.css`));
+                            assert.strictEqual(matches[28], path.resolve(includePaths[2], `${dir}${filePath}.scss`));
+                            assert.strictEqual(matches[29], path.resolve(includePaths[2], `${dir}${filePath}.sass`));
+                            assert.strictEqual(matches[30], path.resolve(includePaths[2], `${dir}_${filePath}.scss`));
+                            assert.strictEqual(matches[31], path.resolve(includePaths[2], `${dir}_${filePath}.sass`));
+                            assert.strictEqual(matches[32], path.resolve(includePaths[2], `${dir}${filePath}/index.scss`));
+                            assert.strictEqual(matches[33], path.resolve(includePaths[2], `${dir}${filePath}/index.sass`));
+                            assert.strictEqual(matches[34], path.resolve(includePaths[2], `${dir}${filePath}/_index.scss`));
+                            assert.strictEqual(matches[35], path.resolve(includePaths[2], `${dir}${filePath}/_index.sass`));
                         }
                     }
                 });
@@ -307,104 +307,104 @@ suite('_resolve relative paths', () => {
     context('_resolve(ambiguous, { prev, includePaths })', () => {
         dirMatrix.forEach((dir) => {
             prevMatrix.forEach((prev) =>{
-                ambiguousFiles.forEach((file) => {
+                ambiguousFiles.forEach((filePath) => {
 
-                    test(`@import ${dir}${file} from ${prev} with includePaths resolves correctly`, () =>{
-                        let url = `${dir}${file}`;
-                        let matches = _resolve(url, { prev, includePaths });
+                    test(`@import ${dir}${filePath} from ${prev} with includePaths resolves correctly`, () =>{
+                        let file = `${dir}${filePath}`;
+                        let matches = _resolve({ file, prev, includePaths });
                         let prevResolved = path.extname(prev) === '' ? prev : path.dirname(prev);
 
-                        if (url.startsWith("../") || url.startsWith("./../")) {
-                            if (file.startsWith('_')) {
-                                assert.equal(matches.length, 7);
-                                assert.equal(matches[0], path.resolve(prevResolved, `${dir}${file}.css`));
-                                assert.equal(matches[1], path.resolve(prevResolved, `${dir}${file}.scss`));
-                                assert.equal(matches[2], path.resolve(prevResolved, `${dir}${file}.sass`));
-                                assert.equal(matches[3], path.resolve(prevResolved, `${dir}${file}/index.scss`));
-                                assert.equal(matches[4], path.resolve(prevResolved, `${dir}${file}/index.sass`));
-                                assert.equal(matches[5], path.resolve(prevResolved, `${dir}${file}/_index.scss`));
-                                assert.equal(matches[6], path.resolve(prevResolved, `${dir}${file}/_index.sass`));
+                        if (file.startsWith('.')) {
+                            if (filePath.startsWith('_')) {
+                                assert.strictEqual(matches.length, 7);
+                                assert.strictEqual(matches[0], path.resolve(prevResolved, `${dir}${filePath}.css`));
+                                assert.strictEqual(matches[1], path.resolve(prevResolved, `${dir}${filePath}.scss`));
+                                assert.strictEqual(matches[2], path.resolve(prevResolved, `${dir}${filePath}.sass`));
+                                assert.strictEqual(matches[3], path.resolve(prevResolved, `${dir}${filePath}/index.scss`));
+                                assert.strictEqual(matches[4], path.resolve(prevResolved, `${dir}${filePath}/index.sass`));
+                                assert.strictEqual(matches[5], path.resolve(prevResolved, `${dir}${filePath}/_index.scss`));
+                                assert.strictEqual(matches[6], path.resolve(prevResolved, `${dir}${filePath}/_index.sass`));
                             } else {
-                                assert.equal(matches.length, 9);
-                                assert.equal(matches[0], path.resolve(prevResolved, `${dir}${file}.css`));
-                                assert.equal(matches[1], path.resolve(prevResolved, `${dir}${file}.scss`));
-                                assert.equal(matches[2], path.resolve(prevResolved, `${dir}${file}.sass`));
-                                assert.equal(matches[3], path.resolve(prevResolved, `${dir}_${file}.scss`));
-                                assert.equal(matches[4], path.resolve(prevResolved, `${dir}_${file}.sass`));
-                                assert.equal(matches[5], path.resolve(prevResolved, `${dir}${file}/index.scss`));
-                                assert.equal(matches[6], path.resolve(prevResolved, `${dir}${file}/index.sass`));
-                                assert.equal(matches[7], path.resolve(prevResolved, `${dir}${file}/_index.scss`));
-                                assert.equal(matches[8], path.resolve(prevResolved, `${dir}${file}/_index.sass`));
+                                assert.strictEqual(matches.length, 9);
+                                assert.strictEqual(matches[0], path.resolve(prevResolved, `${dir}${filePath}.css`));
+                                assert.strictEqual(matches[1], path.resolve(prevResolved, `${dir}${filePath}.scss`));
+                                assert.strictEqual(matches[2], path.resolve(prevResolved, `${dir}${filePath}.sass`));
+                                assert.strictEqual(matches[3], path.resolve(prevResolved, `${dir}_${filePath}.scss`));
+                                assert.strictEqual(matches[4], path.resolve(prevResolved, `${dir}_${filePath}.sass`));
+                                assert.strictEqual(matches[5], path.resolve(prevResolved, `${dir}${filePath}/index.scss`));
+                                assert.strictEqual(matches[6], path.resolve(prevResolved, `${dir}${filePath}/index.sass`));
+                                assert.strictEqual(matches[7], path.resolve(prevResolved, `${dir}${filePath}/_index.scss`));
+                                assert.strictEqual(matches[8], path.resolve(prevResolved, `${dir}${filePath}/_index.sass`));
                             }
                         } else {
-                            if (file.startsWith('_')) {
-                                assert.equal(matches.length, 28);
-                                assert.equal(matches[0], path.resolve(prevResolved, `${dir}${file}.css`));
-                                assert.equal(matches[1], path.resolve(prevResolved, `${dir}${file}.scss`));
-                                assert.equal(matches[2], path.resolve(prevResolved, `${dir}${file}.sass`));
-                                assert.equal(matches[3], path.resolve(prevResolved, `${dir}${file}/index.scss`));
-                                assert.equal(matches[4], path.resolve(prevResolved, `${dir}${file}/index.sass`));
-                                assert.equal(matches[5], path.resolve(prevResolved, `${dir}${file}/_index.scss`));
-                                assert.equal(matches[6], path.resolve(prevResolved, `${dir}${file}/_index.sass`));
-                                assert.equal(matches[7], path.resolve(includePaths[0], `${dir}${file}.css`));
-                                assert.equal(matches[8], path.resolve(includePaths[0], `${dir}${file}.scss`));
-                                assert.equal(matches[9], path.resolve(includePaths[0], `${dir}${file}.sass`));
-                                assert.equal(matches[10], path.resolve(includePaths[0], `${dir}${file}/index.scss`));
-                                assert.equal(matches[11], path.resolve(includePaths[0], `${dir}${file}/index.sass`));
-                                assert.equal(matches[12], path.resolve(includePaths[0], `${dir}${file}/_index.scss`));
-                                assert.equal(matches[13], path.resolve(includePaths[0], `${dir}${file}/_index.sass`));
-                                assert.equal(matches[14], path.resolve(includePaths[1], `${dir}${file}.css`));
-                                assert.equal(matches[15], path.resolve(includePaths[1], `${dir}${file}.scss`));
-                                assert.equal(matches[16], path.resolve(includePaths[1], `${dir}${file}.sass`));
-                                assert.equal(matches[17], path.resolve(includePaths[1], `${dir}${file}/index.scss`));
-                                assert.equal(matches[18], path.resolve(includePaths[1], `${dir}${file}/index.sass`));
-                                assert.equal(matches[19], path.resolve(includePaths[1], `${dir}${file}/_index.scss`));
-                                assert.equal(matches[20], path.resolve(includePaths[1], `${dir}${file}/_index.sass`));
-                                assert.equal(matches[21], path.resolve(includePaths[2], `${dir}${file}.css`));
-                                assert.equal(matches[22], path.resolve(includePaths[2], `${dir}${file}.scss`));
-                                assert.equal(matches[23], path.resolve(includePaths[2], `${dir}${file}.sass`));
-                                assert.equal(matches[24], path.resolve(includePaths[2], `${dir}${file}/index.scss`));
-                                assert.equal(matches[25], path.resolve(includePaths[2], `${dir}${file}/index.sass`));
-                                assert.equal(matches[26], path.resolve(includePaths[2], `${dir}${file}/_index.scss`));
-                                assert.equal(matches[27], path.resolve(includePaths[2], `${dir}${file}/_index.sass`));
+                            if (filePath.startsWith('_')) {
+                                assert.strictEqual(matches.length, 28);
+                                assert.strictEqual(matches[0], path.resolve(prevResolved, `${dir}${filePath}.css`));
+                                assert.strictEqual(matches[1], path.resolve(prevResolved, `${dir}${filePath}.scss`));
+                                assert.strictEqual(matches[2], path.resolve(prevResolved, `${dir}${filePath}.sass`));
+                                assert.strictEqual(matches[3], path.resolve(prevResolved, `${dir}${filePath}/index.scss`));
+                                assert.strictEqual(matches[4], path.resolve(prevResolved, `${dir}${filePath}/index.sass`));
+                                assert.strictEqual(matches[5], path.resolve(prevResolved, `${dir}${filePath}/_index.scss`));
+                                assert.strictEqual(matches[6], path.resolve(prevResolved, `${dir}${filePath}/_index.sass`));
+                                assert.strictEqual(matches[7], path.resolve(includePaths[0], `${dir}${filePath}.css`));
+                                assert.strictEqual(matches[8], path.resolve(includePaths[0], `${dir}${filePath}.scss`));
+                                assert.strictEqual(matches[9], path.resolve(includePaths[0], `${dir}${filePath}.sass`));
+                                assert.strictEqual(matches[10], path.resolve(includePaths[0], `${dir}${filePath}/index.scss`));
+                                assert.strictEqual(matches[11], path.resolve(includePaths[0], `${dir}${filePath}/index.sass`));
+                                assert.strictEqual(matches[12], path.resolve(includePaths[0], `${dir}${filePath}/_index.scss`));
+                                assert.strictEqual(matches[13], path.resolve(includePaths[0], `${dir}${filePath}/_index.sass`));
+                                assert.strictEqual(matches[14], path.resolve(includePaths[1], `${dir}${filePath}.css`));
+                                assert.strictEqual(matches[15], path.resolve(includePaths[1], `${dir}${filePath}.scss`));
+                                assert.strictEqual(matches[16], path.resolve(includePaths[1], `${dir}${filePath}.sass`));
+                                assert.strictEqual(matches[17], path.resolve(includePaths[1], `${dir}${filePath}/index.scss`));
+                                assert.strictEqual(matches[18], path.resolve(includePaths[1], `${dir}${filePath}/index.sass`));
+                                assert.strictEqual(matches[19], path.resolve(includePaths[1], `${dir}${filePath}/_index.scss`));
+                                assert.strictEqual(matches[20], path.resolve(includePaths[1], `${dir}${filePath}/_index.sass`));
+                                assert.strictEqual(matches[21], path.resolve(includePaths[2], `${dir}${filePath}.css`));
+                                assert.strictEqual(matches[22], path.resolve(includePaths[2], `${dir}${filePath}.scss`));
+                                assert.strictEqual(matches[23], path.resolve(includePaths[2], `${dir}${filePath}.sass`));
+                                assert.strictEqual(matches[24], path.resolve(includePaths[2], `${dir}${filePath}/index.scss`));
+                                assert.strictEqual(matches[25], path.resolve(includePaths[2], `${dir}${filePath}/index.sass`));
+                                assert.strictEqual(matches[26], path.resolve(includePaths[2], `${dir}${filePath}/_index.scss`));
+                                assert.strictEqual(matches[27], path.resolve(includePaths[2], `${dir}${filePath}/_index.sass`));
                             } else {
-                                assert.equal(matches.length, 36);
-                                assert.equal(matches[0], path.resolve(prevResolved, `${dir}${file}.css`));
-                                assert.equal(matches[1], path.resolve(prevResolved, `${dir}${file}.scss`));
-                                assert.equal(matches[2], path.resolve(prevResolved, `${dir}${file}.sass`));
-                                assert.equal(matches[3], path.resolve(prevResolved, `${dir}_${file}.scss`));
-                                assert.equal(matches[4], path.resolve(prevResolved, `${dir}_${file}.sass`));
-                                assert.equal(matches[5], path.resolve(prevResolved, `${dir}${file}/index.scss`));
-                                assert.equal(matches[6], path.resolve(prevResolved, `${dir}${file}/index.sass`));
-                                assert.equal(matches[7], path.resolve(prevResolved, `${dir}${file}/_index.scss`));
-                                assert.equal(matches[8], path.resolve(prevResolved, `${dir}${file}/_index.sass`));
-                                assert.equal(matches[9], path.resolve(includePaths[0], `${dir}${file}.css`));
-                                assert.equal(matches[10], path.resolve(includePaths[0], `${dir}${file}.scss`));
-                                assert.equal(matches[11], path.resolve(includePaths[0], `${dir}${file}.sass`));
-                                assert.equal(matches[12], path.resolve(includePaths[0], `${dir}_${file}.scss`));
-                                assert.equal(matches[13], path.resolve(includePaths[0], `${dir}_${file}.sass`));
-                                assert.equal(matches[14], path.resolve(includePaths[0], `${dir}${file}/index.scss`));
-                                assert.equal(matches[15], path.resolve(includePaths[0], `${dir}${file}/index.sass`));
-                                assert.equal(matches[16], path.resolve(includePaths[0], `${dir}${file}/_index.scss`));
-                                assert.equal(matches[17], path.resolve(includePaths[0], `${dir}${file}/_index.sass`));
-                                assert.equal(matches[18], path.resolve(includePaths[1], `${dir}${file}.css`));
-                                assert.equal(matches[19], path.resolve(includePaths[1], `${dir}${file}.scss`));
-                                assert.equal(matches[20], path.resolve(includePaths[1], `${dir}${file}.sass`));
-                                assert.equal(matches[21], path.resolve(includePaths[1], `${dir}_${file}.scss`));
-                                assert.equal(matches[22], path.resolve(includePaths[1], `${dir}_${file}.sass`));
-                                assert.equal(matches[23], path.resolve(includePaths[1], `${dir}${file}/index.scss`));
-                                assert.equal(matches[24], path.resolve(includePaths[1], `${dir}${file}/index.sass`));
-                                assert.equal(matches[25], path.resolve(includePaths[1], `${dir}${file}/_index.scss`));
-                                assert.equal(matches[26], path.resolve(includePaths[1], `${dir}${file}/_index.sass`));
-                                assert.equal(matches[27], path.resolve(includePaths[2], `${dir}${file}.css`));
-                                assert.equal(matches[28], path.resolve(includePaths[2], `${dir}${file}.scss`));
-                                assert.equal(matches[29], path.resolve(includePaths[2], `${dir}${file}.sass`));
-                                assert.equal(matches[30], path.resolve(includePaths[2], `${dir}_${file}.scss`));
-                                assert.equal(matches[31], path.resolve(includePaths[2], `${dir}_${file}.sass`));
-                                assert.equal(matches[32], path.resolve(includePaths[2], `${dir}${file}/index.scss`));
-                                assert.equal(matches[33], path.resolve(includePaths[2], `${dir}${file}/index.sass`));
-                                assert.equal(matches[34], path.resolve(includePaths[2], `${dir}${file}/_index.scss`));
-                                assert.equal(matches[35], path.resolve(includePaths[2], `${dir}${file}/_index.sass`));
+                                assert.strictEqual(matches.length, 36);
+                                assert.strictEqual(matches[0], path.resolve(prevResolved, `${dir}${filePath}.css`));
+                                assert.strictEqual(matches[1], path.resolve(prevResolved, `${dir}${filePath}.scss`));
+                                assert.strictEqual(matches[2], path.resolve(prevResolved, `${dir}${filePath}.sass`));
+                                assert.strictEqual(matches[3], path.resolve(prevResolved, `${dir}_${filePath}.scss`));
+                                assert.strictEqual(matches[4], path.resolve(prevResolved, `${dir}_${filePath}.sass`));
+                                assert.strictEqual(matches[5], path.resolve(prevResolved, `${dir}${filePath}/index.scss`));
+                                assert.strictEqual(matches[6], path.resolve(prevResolved, `${dir}${filePath}/index.sass`));
+                                assert.strictEqual(matches[7], path.resolve(prevResolved, `${dir}${filePath}/_index.scss`));
+                                assert.strictEqual(matches[8], path.resolve(prevResolved, `${dir}${filePath}/_index.sass`));
+                                assert.strictEqual(matches[9], path.resolve(includePaths[0], `${dir}${filePath}.css`));
+                                assert.strictEqual(matches[10], path.resolve(includePaths[0], `${dir}${filePath}.scss`));
+                                assert.strictEqual(matches[11], path.resolve(includePaths[0], `${dir}${filePath}.sass`));
+                                assert.strictEqual(matches[12], path.resolve(includePaths[0], `${dir}_${filePath}.scss`));
+                                assert.strictEqual(matches[13], path.resolve(includePaths[0], `${dir}_${filePath}.sass`));
+                                assert.strictEqual(matches[14], path.resolve(includePaths[0], `${dir}${filePath}/index.scss`));
+                                assert.strictEqual(matches[15], path.resolve(includePaths[0], `${dir}${filePath}/index.sass`));
+                                assert.strictEqual(matches[16], path.resolve(includePaths[0], `${dir}${filePath}/_index.scss`));
+                                assert.strictEqual(matches[17], path.resolve(includePaths[0], `${dir}${filePath}/_index.sass`));
+                                assert.strictEqual(matches[18], path.resolve(includePaths[1], `${dir}${filePath}.css`));
+                                assert.strictEqual(matches[19], path.resolve(includePaths[1], `${dir}${filePath}.scss`));
+                                assert.strictEqual(matches[20], path.resolve(includePaths[1], `${dir}${filePath}.sass`));
+                                assert.strictEqual(matches[21], path.resolve(includePaths[1], `${dir}_${filePath}.scss`));
+                                assert.strictEqual(matches[22], path.resolve(includePaths[1], `${dir}_${filePath}.sass`));
+                                assert.strictEqual(matches[23], path.resolve(includePaths[1], `${dir}${filePath}/index.scss`));
+                                assert.strictEqual(matches[24], path.resolve(includePaths[1], `${dir}${filePath}/index.sass`));
+                                assert.strictEqual(matches[25], path.resolve(includePaths[1], `${dir}${filePath}/_index.scss`));
+                                assert.strictEqual(matches[26], path.resolve(includePaths[1], `${dir}${filePath}/_index.sass`));
+                                assert.strictEqual(matches[27], path.resolve(includePaths[2], `${dir}${filePath}.css`));
+                                assert.strictEqual(matches[28], path.resolve(includePaths[2], `${dir}${filePath}.scss`));
+                                assert.strictEqual(matches[29], path.resolve(includePaths[2], `${dir}${filePath}.sass`));
+                                assert.strictEqual(matches[30], path.resolve(includePaths[2], `${dir}_${filePath}.scss`));
+                                assert.strictEqual(matches[31], path.resolve(includePaths[2], `${dir}_${filePath}.sass`));
+                                assert.strictEqual(matches[32], path.resolve(includePaths[2], `${dir}${filePath}/index.scss`));
+                                assert.strictEqual(matches[33], path.resolve(includePaths[2], `${dir}${filePath}/index.sass`));
+                                assert.strictEqual(matches[34], path.resolve(includePaths[2], `${dir}${filePath}/_index.scss`));
+                                assert.strictEqual(matches[35], path.resolve(includePaths[2], `${dir}${filePath}/_index.sass`));
                             }
                         }
                     });

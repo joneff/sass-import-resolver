@@ -1,46 +1,53 @@
 const fs = require('fs');
 const path = require('path');
+const merge = require('lodash.merge');
+
 const reExt = /\.(css|scss|sass)$/;
 
-const isExternal = (url) => {
-    return url.startsWith('http') || url.startsWith('//') || url.startsWith('url(');
-};
-
-const defaultOptions = {
+const defaults = {
     prev: '',
     includePaths: [],
     nodeModules: './node_modules'
 };
 
-const _resolve = (url, options = {}) => {
-    let file;
-    let prev = options.prev || defaultOptions.prev;
-    let includePaths = options.includePaths || defaultOptions.includePaths;
-    let nodeModules = options.nodeModules || defaultOptions.nodeModules;
+function isExternal(url) {
+    return url.startsWith('http') || url.startsWith('//') || url.startsWith('url(');
+}
+
+function _resolve( options ) {
+    const opts = merge( {}, defaults, options );
+    const {
+        file,
+        prev,
+        nodeModules
+    } = opts;
+    let { includePaths } = opts;
+
+    let candidte;
     let cwd = path.extname(prev) ? path.dirname(prev) : prev;
-    let meta = path.parse(url);
+    let meta = path.parse(file);
     let matches = new Set();
 
     // Skip external stylesheets
-    if (isExternal(url)) {
-        return [ url ];
+    if (isExternal(file)) {
+        return [ file ];
     }
 
     // Absolute path
-    if (url.startsWith('/')) {
+    if (file.startsWith('/')) {
         cwd = '';
         includePaths = [];
     }
 
     // node_modules import
-    if (url.startsWith('~')) {
-        meta = path.parse(url.slice(1));
+    if (file.startsWith('~')) {
+        meta = path.parse(file.slice(1));
         cwd = path.resolve(nodeModules);
         includePaths = [];
     }
 
     // Import from parent
-    if (url.startsWith('../') || url.startsWith('./../')) {
+    if (file.startsWith('.')) {
         includePaths = [];
     }
 
@@ -48,11 +55,11 @@ const _resolve = (url, options = {}) => {
     includePaths = new Set([ cwd, ...includePaths ]);
 
     includePaths.forEach(( dir ) => {
-        file = path.resolve(dir, path.format(meta));
+        candidte = path.resolve(dir, path.format(meta));
 
         // Has extension
-        if ( reExt.test(file) ) {
-            matches.add(file);
+        if ( reExt.test(candidte) ) {
+            matches.add(candidte);
         } else {
             // No extension
             if (meta.base.startsWith('_')) {
@@ -80,27 +87,27 @@ const _resolve = (url, options = {}) => {
 
     return [ ...matches ];
 
-};
+}
 
-const resolve = (url, options) => {
+function resolve( options ) {
 
-    let resolved = _resolve(url, options);
+    let file = options.file;
+    let resolved = _resolve(options);
     let existing = [];
 
     if (resolved.length && isExternal(resolved[0])) {
-        return url;
+        return file;
     }
 
-    resolved.forEach((file) => {
-        if (fs.existsSync(file)) {
-            existing.push(file);
+    resolved.forEach((candidate) => {
+        if (fs.existsSync(candidate)) {
+            existing.push(candidate);
         }
     });
 
-    return existing[0] || url;
-};
+    return existing[0] || file;
+}
 
-module.exports = {
-    _resolve,
-    resolve
-};
+
+module.exports.resolve = resolve;
+module.exports._resolve = _resolve;
