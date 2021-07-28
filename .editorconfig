@@ -14,18 +14,10 @@ max_line_length = off
 indent_style = space
 indent_size = 4
 
-[*.js]
+[*.{js,json}]
 indent_style = space
 indent_size = 4
 
-[*.yml]
-indent_style = space
-indent_size = 4
-
-[*.json]
-indent_style = space
-indent_size = 4
-
-[package.json]
+[{package.json,*.yml}]
 indent_style = space
 indent_size = 2
