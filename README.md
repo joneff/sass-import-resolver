@@ -68,7 +68,7 @@ The algorithm is based on [Sass `@import` documentation], and should work as fol
 5) if `includePaths` is not passed, assume it's an empty array;
 6) if `file` starts with `/`, assume absolute import, set `cwd` to `/` and clear `includePaths`;
 7) if `file` starts with `~`, assume node_modules import, set `cwd` to `node_modules` and clear `includePaths`
-8) if `file` starts with `../`, clear `includePaths`
+8) if `file` starts with `.`, clear `includePaths`
 9) assuming there are any `includePaths` left, unique them with `cwd` and loop them
     1) if the file portion of `file` has `.css`, `.scss`, or `.sass` extension, resolve tha path and return it
     2) if the file portion `file` starts with `_`, resolve and return the following 7 variants in that order:
