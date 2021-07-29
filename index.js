@@ -34,7 +34,7 @@ function _resolve( options ) {
     }
 
     // Absolute path
-    if (file.startsWith('/')) {
+    if (path.isAbsolute(file)) {
         cwd = '';
         includePaths = [];
     }
