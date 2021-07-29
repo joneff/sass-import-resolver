@@ -10,8 +10,8 @@ const defaults = {
     nodeModules: './node_modules'
 };
 
-function isExternal(url) {
-    return url.startsWith('http') || url.startsWith('//') || url.startsWith('url(');
+function isExternal(filePath) {
+    return filePath.startsWith('http://') || filePath.startsWith('https://') || filePath.startsWith('//') || filePath.startsWith('\\\\') || filePath.startsWith('url(');
 }
 
 function _resolve( options ) {
