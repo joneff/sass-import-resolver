@@ -1,7 +1,7 @@
 {
   "name": "@joneff/sass-import-resolver",
   "description": "Resolves the path of sass imports, following a heavily opinionated and probably very shady algorithm",
-  "version": "0.4.0",
+  "version": "1.0.0",
   "author": "Ivan Zhekov <joneff@gmail.com>",
   "license": "MIT",
   "keywords": [
